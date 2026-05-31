@@ -245,7 +245,7 @@ export function NavBar() {
                   >
                     <span>
                       See all results for{' '}
-                      <span className="text-text-primary font-medium">"{query.trim()}"</span>
+                      <span className="text-text-primary font-medium">&quot;{query.trim()}&quot;</span>
                     </span>
                     <ArrowRight size={12} />
                   </Link>

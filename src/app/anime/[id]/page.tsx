@@ -158,6 +158,7 @@ export default async function AnimePage({ params }: { params: Promise<{ id: stri
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-accent/40 bg-accent/10 hover:bg-accent/20 transition-all text-xs font-medium text-accent group"
                     >
                       {link.icon
+                        // eslint-disable-next-line @next/next/no-img-element
                         ? <img src={link.icon} alt="" className="w-4 h-4 rounded-sm object-contain" />
                         : <ExternalLink size={11} />}
                       {link.site}
@@ -171,6 +172,7 @@ export default async function AnimePage({ params }: { params: Promise<{ id: stri
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface hover:border-accent/30 hover:bg-surface-elevated transition-all text-xs font-medium text-text-muted hover:text-text-primary group"
                     >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={`https://www.google.com/s2/favicons?domain=${link.domain}&sz=32`}
                         alt=""

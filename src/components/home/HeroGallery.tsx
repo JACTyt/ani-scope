@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, Play, ChevronRight } from 'lucide-react';
+import { Star, Play } from 'lucide-react';
 import type { AniListMediaCard } from '@/types/anilist';
 
 interface HeroGalleryProps {
