@@ -6,15 +6,36 @@ import { Badge } from '@/components/ui/Badge';
 import { ScoreChart } from '@/components/anime/ScoreChart';
 import { TrailerEmbed } from '@/components/anime/TrailerEmbed';
 import { SimilarAnime } from '@/components/anime/SimilarAnime';
-import type { AniListMediaDetail, AniListMediaCard } from '@/types/anilist';
+import { anilistFetch } from '@/lib/anilist/client';
+import { ANIME_DETAIL_QUERY, ANIME_LIST_QUERY } from '@/lib/anilist/queries';
+import type { AniListMediaDetail, AniListMediaCard, AniListPage } from '@/types/anilist';
 
 export const revalidate = 86400;
 
 async function getAnimeDetail(id: string) {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
-  const res = await fetch(`${base}/api/anime/${id}`, { next: { revalidate: 86400 } });
-  if (!res.ok) return null;
-  return res.json() as Promise<{ anime: AniListMediaDetail; tagSimilar: AniListMediaCard[] }>;
+  const animeId = Number(id);
+  if (!Number.isFinite(animeId)) return null;
+  try {
+    const data = await anilistFetch<{ Media: AniListMediaDetail }>(
+      ANIME_DETAIL_QUERY,
+      { id: animeId },
+      86400
+    );
+    const anime = data.Media;
+    const topTags = anime.tags.slice(0, 5).map((t) => t.name);
+    let tagSimilar: AniListMediaCard[] = [];
+    if (topTags.length > 0) {
+      const similar = await anilistFetch<{ Page: AniListPage<AniListMediaCard> }>(
+        ANIME_LIST_QUERY,
+        { tag_in: topTags, sort: ['POPULARITY_DESC'], perPage: 10 },
+        86400
+      );
+      tagSimilar = similar.Page.media.filter((m) => m.id !== animeId).slice(0, 6);
+    }
+    return { anime, tagSimilar };
+  } catch {
+    return null;
+  }
 }
 
 export default async function AnimePage({ params }: { params: Promise<{ id: string }> }) {
